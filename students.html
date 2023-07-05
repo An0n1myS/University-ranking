@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Сторінка студентів</title>
+  {% include 'templates/header_links.html' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/students.css') }}">
+  <style>
+    .edit-grade-input {
+      display: none;
+    }
+    .edit-grade-button.clicked,
+    .delete-student-button.clicked {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+{% include 'templates/header.html' %}
+<main>
+  {% for group_name, group in groups.items() %}
+    <section>
+      <h2>Група {{ group_name }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Студент</th>
+            {% for subject_name in group['students'][0]['grades'].keys() %}
+              <th>{{ subject_name }}</th>
+            {% endfor %}
+            <th>Операції</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in group['students'] %}
+            <tr>
+              <td>{{ student['name'] }}</td>
+              {% for subject_name, grade in student['grades'].items() %}
+                <td>
+                  <span class="grade" id="grade-{{ group_name }}-{{ student['id'] }}-{{ subject_name }}">{{ grade }}</span>
+                  <input type="text" class="edit-grade-input" id="input-{{ group_name }}-{{ student['id'] }}-{{ subject_name }}" data-group="{{ group_name }}" data-student="{{ student['id'] }}" data-subject="{{ subject_name }}" value="{{ grade }}">
+                </td>
+              {% endfor %}
+              <td class="options">
+                <button class="edit-grade-button" data-group="{{ group_name }}" data-student="{{ student['id'] }}">&#9998;</button>
+                <form style="display: inline;"method="post" action="/delete_student">
+                  <input type="hidden" name="student_id" value="{{ student['id'] }}">
+                  <button type="submit" class="delete-student-button" data-group="{{ group_name }}" data-student="{{ student['id'] }}">&#128465;</button>
+                </form>
+                <button type="submit" class="save-grade-button" data-group="{{ group_name }}" data-student="{{ student['id'] }}">&#10004;</button>
+                <button class="cancel-grade-button" data-group="{{ group_name }}" data-student="{{ student['id'] }}">&#10008;</button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endfor %}
+</main>
+{% include 'templates/footer.html' %}
+<script src="{{ url_for('static', filename='js/students.js') }}"></script>
+<script>
+
+</script>
+
+</body>
+</html>

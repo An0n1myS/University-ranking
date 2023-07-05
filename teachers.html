@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'templates/header_links.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teachers.css') }}">
+</head>
+<body>
+    {% include 'templates/header.html' %}
+    <div class="content">
+        {% block content %}
+          <h1>Список вчителів та їх предметів</h1>
+          {% for teacher_name, subjects in teachers_subjects.items() %}
+            <section>
+              <h2>{{ teacher_name }}</h2>
+              <ul>
+                  {% for subject_name in subjects %}
+                    <li>{{ subject_name }}</li>
+                  {% endfor %}
+              </ul>
+              <form action="/delete_teacher" method="post">
+                <input type="hidden" value="{{ teacher_name }}" name="teacher_name_input">
+                <button type="submit" class="delete-teacher">Видалити вчителя</button>
+              </form>
+            </section>
+          {% endfor %}
+        {% endblock %}
+        <form action="/add_teacher" method="post" class="add-teacher-form">
+            <h2>Додати нового вчителя</h2>
+            <label for="teacher_name">Ім'я вчителя:</label>
+            <input type="text" id="teacher_name" name="teacher_name">
+            <label for="subject_name">Назва предмету:</label>
+            <select id="subject_name" name="subject_name">
+                {% for teacher_name, subjects in teachers_subjects.items() %}
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <button type="submit">Додати вчителя</button>
+        </form>
+        <br>
+        <br>
+    </div>
+    {% include 'templates/footer.html' %}
+</body>
+</html>
